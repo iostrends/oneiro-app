@@ -52,7 +52,13 @@
 
 - (void) viewWillAppear:(BOOL)animated
 {
-    [ _txtJournalTitle setText: self.Options_JTitle];
+    // Load the dream journal title.
+    DreamJournal *Dj = [JournalController getArchievedDreamJournal:self.refKey];
+    if (Dj != nil)
+    {
+        [_txtJournalTitle setText: Dj.Title];
+    }
+    
     _lblOwnerName.text = [_lblOwnerName.text stringByAppendingString:self.Options_JOwner];
     _lblCreateDate.text = [_lblCreateDate.text stringByAppendingString:self.Options_CreateDate];
 }
@@ -60,14 +66,14 @@
 {
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
         NSLog(@"Dream Journal has been deleted (test)");
-       
+        [UINotificationBanner showBannerWithMessage:@"Journal deleted" forDuration:3.0];
         [JournalController deleteJournalArchieve:defaultJournalKey];
         [self.delegate didDeleteJournal]; // Call Delegate Function
         [self dismissViewControllerAnimated:YES completion:nil];
     }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle: @"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        NSLog(@"Cancel aborted");
+        // Do nothing
     }];
     NSArray *alertActionsArray = [NSArray arrayWithObjects:okAction, cancelAction, nil];
     AlertBox *_alertDialog = [[AlertBox alloc] initWithTitleStringAndActionButtons:@"Delete Journal" :@"Are you sure you want to delete this journal. Action cannot be undone" :alertActionsArray];
@@ -95,11 +101,13 @@
             DreamJournal *j = [JournalController getArchievedDreamJournal:self.refKey];
             // Load the journal
             j.Title = alertbox.textFields[0].text; // Update the title
-            
+            [self.txtJournalTitle setText:alertbox.textFields[0].text]; // Update the caption immediately
             // Save the data
             [JournalController saveArchieveDreamJournal:j forWhatKey:self.refKey];
             NSLog(@"User inputted: %@", alertbox.textFields[0].text);
-            [UINotificationBanner showBannerWithMessage:@"Journal was renamed." forDuration:3];
+            NSString *note_string = @"Journal renamed to ";
+            NSString *final = [note_string stringByAppendingString:j.Title];
+            [UINotificationBanner showBannerWithMessage:final forDuration:3];
         }
         
     }]];

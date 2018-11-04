@@ -208,8 +208,19 @@
 - (IBAction)cmdTest_Tap:(id)sender
 {
    // ** DEBUG TEST - dream journal deletion // Back up
-    [JournalController resetJournalArchieve:defaultJournalKey];
     
+    // Prompt the user
+    UIAlertAction *ok_Action = [UIAlertAction actionWithTitle:@"Confirm Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [JournalController resetJournalArchieve:defaultJournalKey];
+        [UINotificationBanner showBannerWithMessage:@"Journal Data file is deleted" forDuration:3.0];
+    }];
+    
+    UIAlertAction *cancel_action = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        // Action is cancelled
+    }];
+    NSArray *action_list = [[NSArray alloc] initWithObjects:ok_Action, cancel_action, nil];
+    AlertBox *box = [[AlertBox alloc] initWithTitleStringAndActionButtons:@"Delete Journal Data File" :@"This will delete the journal from this device. Are you sure you wish to continue?" :action_list];
+    [self presentViewController:box.internalController  animated:YES completion:nil];
     // This will segue to the creation of a new journal file
     
 }

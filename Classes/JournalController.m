@@ -166,7 +166,7 @@
     [J.journalEntries replaceObjectAtIndex:index withObject:entry];
     [self saveArchieveDreamJournal:J forWhatKey:forKey];
 }
-+ (NSMutableArray <NSString *>*) loadDefaultDreamSignDatabase
++ (NSArray <NSString *>*) loadDefaultDreamSignDatabase
 {
     // Read the data file
     NSString *path = [NSBundle.mainBundle pathForResource:@"dreamsigns" ofType:@"txt"];
@@ -199,9 +199,9 @@
     
     DreamJournal *Jrn = [self getArchievedDreamJournal:@"journal"];
     NSArray *getAllSigns = [self getAllJournalDreamSignsForJournal:Jrn];
-    returnValue = [NSMutableArray arrayWithArray:getAllSigns];
+    NSArray *final_return = [returnValue arrayByAddingObjectsFromArray:getAllSigns];
    
-    return returnValue;
+    return final_return;
 }
 + (NSArray *) getAllJournalDreamSignsForJournal : (DreamJournal *) refJournal
 {
